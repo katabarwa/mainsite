@@ -120,7 +120,7 @@ a {
 
 .window {
   width: 100%;
-  height: 91%;
+  height: 96%;
   border-radius: 8px;
 
 }
