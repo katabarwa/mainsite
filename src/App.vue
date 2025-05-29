@@ -3,11 +3,12 @@
 import { ref } from 'vue';
 
 
+
 const sites = [
-  { url: "https://home.ssome.how/" },
-  { url: "https://www.ssome.how/" },
-  { url: "https://www.j-uk.art/" },
-  { url: "https://www.offline.li/" },
+  { txtColor:"black", bgColor:"white", name:"creative direction", url: "https://home.ssome.how/" },
+  { txtColor:"white", bgColor:"black", name:"curation", url: "https://www.ssome.how/" },
+  { txtColor:"black", bgColor:"white", name:"art & publishing", url: "https://www.j-uk.art/" },
+  { txtColor:"white", bgColor:"#181818", name:"design", url: "https://www.offline.li/" },
 ];
 
 // Initialize equal percentage widths
@@ -61,9 +62,12 @@ function stopResizing() {
       v-for="site in sites"
       :key="site"
       class="card"
-        :style="{ width: cardWidths[index] + '%' }"
+        :style=" { backgroundColor:site.bgColor, width: cardWidths[index] + '%' }"
       ref="cardRefs"
       >
+      <div>
+        <a :style="{color:site.txtColor}" :href="site.url">{{site.name}}</a>
+      </div>
       <iframe 
         :src="site.url"
         class="window"
@@ -81,7 +85,6 @@ function stopResizing() {
 
 <style scoped>
 
-
 main{
   width: 100%;
   height: 102%;
@@ -92,18 +95,34 @@ main{
 .card {
   position: relative;
   min-width: 10%;
-  height: 100%;
+  height: 96%;
   width: 25%;
-  margin: 5px;
-
-  
-
+  margin: 7px 3px 5px 3px;
+  background-color: green;
+  border-radius: 8px;
+  padding: 2px;
+  filter: drop-shadow(1px 0px 2px #cfcaff);
 }
+
+a {
+  display: block;
+    width: 25vw;
+    text-align: center;
+    /* color: white; */
+    text-decoration: none;
+    font-family:  Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 9px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+}
+
 
 .window {
   width: 100%;
-  height: 100%;
+  height: 91%;
   border-radius: 8px;
+
 }
 
 /* .resize-handle {
