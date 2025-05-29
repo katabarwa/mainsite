@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
 
 
 
@@ -11,57 +11,136 @@ const sites = [
   { txtColor:"white", bgColor:"#181818", name:"design", url: "https://www.offline.li/" },
 ];
 
-// Initialize equal percentage widths
+
 const cardWidths = ref(Array(sites.length).fill(100 / sites.length));
-const dashboardRef = ref(null);
-console.log("cardWidths",cardWidths.value);
-let resizingIndex = null;
-let startX = 0;
-let containerWidth = 0;
 
-function startResizing(index, event) {
-  console.log('startResizing:', index);
-  resizingIndex = index;
-  startX = event.clientX;
-  containerWidth = dashboardRef.value.offsetWidth;
+const windowWidth = ref(window.innerWidth)
+const windowHeight = ref(window.innerHeight)
+const supportsOrientation = 'orientation' in window.screen;
 
-  window.addEventListener('mousemove', handleResize);
-  window.addEventListener('mouseup', stopResizing);
+console.log("asd",window.screen.orientation.type)
+
+const isPortrait = computed(() => {
+  if (supportsOrientation) {
+    return window.screen.orientation.type.includes('portrait');
+  } else {
+    return windowHeight.value > windowWidth.value;
+  }
+});
+
+function updateOrientation() {
+  windowWidth.value = window.innerWidth;
+  windowHeight.value = window.innerHeight;
 }
 
-function handleResize(event) {
-  if (resizingIndex === null) return;
+const applyBodyStyles = () => {
+  const body = document.body;
+  const main = document.querySelector('main');
+  const cards = document.getElementsByClassName("card");
+  const h2 = document.querySelectorAll('h2');
+  const iframes = document.querySelectorAll('iframe');
+  
 
-  const dx = event.clientX - startX;
-  const deltaPercent = (dx / containerWidth) * 100;
+  
+  if (isPortrait.value) {
+    
+    body.style.overflow = 'scroll'
+    main.style.flexDirection = 'column'
+    main.style.width = '100%'
+    main.style.height = '400%'
+    for (let i=0; i < cards.length; i++) {
+      cards[i].style.height = '70vh'
+      cards[i].style.paddingBottom = '10px'
+      cards[i].style.display = 'flex'
+      cards[i].style.flexDirection = 'column'
+      cards[i].style.alignItems = 'center'
 
-  const newLeft = cardWidths.value[resizingIndex] + deltaPercent;
-  const newRight = cardWidths.value[resizingIndex + 1] - deltaPercent;
-  if (newLeft < 10 || newRight < 10) return;
 
-  cardWidths.value[resizingIndex] = newLeft;
-  cardWidths.value[resizingIndex + 1] = newRight;
-  startX = event.clientX;
+    }
+    for (let i=0; i < cards.length; i++) {
+      
+
+      iframes[i].style.width = '97.4%'
+      iframes[i].style.height = '90%'
+      iframes[i].style.paddingBottom = '10px'
+    }
+    h2.style.width = '100%'
+
+
+
+
+    } else {
+   
+        main.style.flexDirection = 'row'
+        main.style.width = '100%'
+        main.style.height = '80%'
+      
+        
+     
+        for (let i=0; i < cards.length; i++) {
+          cards[i].style.width = '24%'
+          cards[i].style.height = 'fit-content'
+          cards[i].style.marginBottom = '10px'
+          h2[i].style.width = '100%%'
+          iframes[i].style.width = '98%'
+          iframes[i].style.height = 'fit-content'
+          iframes[i].style.marginBottom = '10px'
+       };
+       for (let i=0; i < cards.length; i++) {
+       
+     
+    };
+    }
+  
+  body.style.transition = 'all 0.5s ease'
 }
 
-function stopResizing() {
-  window.removeEventListener('mousemove', handleResize);
-  window.removeEventListener('mouseup', stopResizing);
-  resizingIndex = null;
-}
+const originalStyles = ref({})
+
+watch(isPortrait, () => {
+  applyBodyStyles()
+  updateOrientation()
+})
+
+onMounted(() => {
+
+
+  window.addEventListener('orientationchange', updateOrientation);
+  window.addEventListener('resize', updateOrientation);
+
+  applyBodyStyles()
+})
+
+onUnmounted(() => {
+  // Remove resize listener
+  window.removeEventListener('orientationchange', updateOrientation);
+  window.removeEventListener('resize', updateOrientation);
+  
+})
+
+
+
+
+
+
+
+
 </script>
 
 <template>
 
   <header>
     <div class="head">
-      <h1>JESSE KATABARWA</h1>
+      
+        <h1><a href="mailto: jesse@ssome.how" >JESSE KATABARWA   </a></h1>
+   
+
     </div>
 
 
   </header>
 
-  <main ref="dashboardRef">
+  <main>
     <div
       v-for="site in sites"
       :key="site"
@@ -69,9 +148,9 @@ function stopResizing() {
         :style=" { backgroundColor:site.bgColor, width: cardWidths[index] + '%' }"
       ref="cardRefs"
       >
-      <div>
-        <a :style="{color:site.txtColor}" :href="site.url">{{site.name}}</a>
-      </div>
+      <h2>
+        <a  :style="{color:site.txtColor}" :href="site.url">{{site.name}}</a>
+      </h2>
       <iframe 
         :src="site.url"
         class="window"
@@ -87,7 +166,12 @@ function stopResizing() {
   </main>
 </template>
 
-<style scoped>
+<style >
+
+main {
+  display: flex;
+}
+
 
 header {
   display: flex;
@@ -111,7 +195,7 @@ header {
   background-color: #f4f4f4;
 }
 
-h1 {
+h1, h1 a{
   font-family: 'Helvetica Neue', Helvetica, Helvetica system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial , sans-serif;
   font-size: 7px;
   font-weight: 400;
@@ -120,24 +204,19 @@ h1 {
   cursor: pointer;
   margin: 0;
   text-indent: 43px;
+  text-decoration: none;
+  color: grey;
 }
 
-h1:hover {
+h1 a:hover {
   letter-spacing: 45px;
 } 
 
-main{
-  width: 100%;
-  height: 102%;
-  display: flex;
-  flex-direction: row;
-}
+
 
 .card {
   position: relative;
   min-width: 10%;
-  height: 92%;
-  width: 25%;
   margin: 6px 3px 5px 3px;
   background-color: green;
   border-radius: 8px;
@@ -145,11 +224,10 @@ main{
   filter: drop-shadow(1px 0px 2px #cfcaff);
 }
 
-a {
+h2 a {
   display: block;
-    width: 25vw;
+ 
     text-align: center;
-    /* color: white; */
     text-decoration: none;
     font-family:  Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: 400;
@@ -160,8 +238,7 @@ a {
 
 
 .window {
-  width: 100%;
-  height: 96%;
+
   border-radius: 8px;
 
 }
