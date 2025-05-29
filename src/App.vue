@@ -54,6 +54,10 @@ function stopResizing() {
 <template>
 
   <header>
+    <div class="head">
+      <h1>JESSE KATABARWA</h1>
+    </div>
+
 
   </header>
 
@@ -85,6 +89,43 @@ function stopResizing() {
 
 <style scoped>
 
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 4px;
+}
+
+.head {
+
+  width: fit-content;
+  height: fit-content;
+  background-color: #dedcdc;
+  margin: 7px 0 8px 0;
+  border-radius: 15px;
+
+
+}
+
+.head:hover {
+  background-color: #f4f4f4;
+}
+
+h1 {
+  font-family: 'Helvetica Neue', Helvetica, Helvetica system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial , sans-serif;
+  font-size: 7px;
+  font-weight: 400;
+  letter-spacing: 40px;
+  text-align: center;
+  cursor: pointer;
+  margin: 0;
+  text-indent: 43px;
+}
+
+h1:hover {
+  letter-spacing: 45px;
+} 
+
 main{
   width: 100%;
   height: 102%;
@@ -95,9 +136,9 @@ main{
 .card {
   position: relative;
   min-width: 10%;
-  height: 96%;
+  height: 92%;
   width: 25%;
-  margin: 7px 3px 5px 3px;
+  margin: 6px 3px 5px 3px;
   background-color: green;
   border-radius: 8px;
   padding: 2px;
