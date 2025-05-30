@@ -2,6 +2,9 @@
 
 import { ref, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
 
+import { useScreenOrientation } from '@vueuse/core'
+
+
 
 
 const sites = [
@@ -14,24 +17,44 @@ const sites = [
 
 const cardWidths = ref(Array(sites.length).fill(100 / sites.length));
 
-const windowWidth = ref(window.innerWidth)
-const windowHeight = ref(window.innerHeight)
-const supportsOrientation = 'orientation' in window.screen;
+let portrait = window.matchMedia("(orientation: portrait)");
 
-console.log("asd",window.screen.orientation.type)
+const isPortrait = ref(portrait.matches)
+console.log("Initial orientation:", portrait.matches)
 
-const isPortrait = computed(() => {
-  if (supportsOrientation) {
-    return window.screen.orientation.type.includes('portrait');
-  } else {
-    return windowHeight.value > windowWidth.value;
-  }
-});
+portrait.addEventListener("change", function(e) {
+    if(e.matches) {
+        isPortrait.value = true
+        console.log("portrait")   
+    } else {
+        isPortrait.value = false
+        console.log("landscape")
+    }
+    console.log("isPortrait",isPortrait.value)
+    window.location.reload()
+})
 
-function updateOrientation() {
-  windowWidth.value = window.innerWidth;
-  windowHeight.value = window.innerHeight;
-}
+
+const {
+  isSupported,
+  orientation,
+  angle,
+  lockOrientation,
+  unlockOrientation,
+} = useScreenOrientation()
+
+
+console.log("screen orientation",useScreenOrientation().orientation.value)
+
+watch(isPortrait, () => {
+  console.log("Orientation changed:", isPortrait.value)
+  applyBodyStyles()
+})
+
+onMounted(() => {
+  console.log("Initial orientation:", orientation.value)
+  applyBodyStyles()
+})
 
 const applyBodyStyles = () => {
   const body = document.body;
@@ -40,89 +63,46 @@ const applyBodyStyles = () => {
   const h2 = document.querySelectorAll('h2');
   const iframes = document.querySelectorAll('iframe');
   
-
-  
   if (isPortrait.value) {
-    
-    body.style.overflow = 'scroll'
+    body.style.overflowY = 'scroll'
+    body.style.overflowX = 'hidden'
     main.style.flexDirection = 'column'
     main.style.width = '100%'
-    main.style.height = '400%'
+    main.style.height = '250%'
     for (let i=0; i < cards.length; i++) {
       cards[i].style.height = '70vh'
       cards[i].style.paddingBottom = '10px'
       cards[i].style.display = 'flex'
       cards[i].style.flexDirection = 'column'
       cards[i].style.alignItems = 'center'
-
-
     }
     for (let i=0; i < cards.length; i++) {
-      
-
       iframes[i].style.width = '97.4%'
       iframes[i].style.height = '90%'
       iframes[i].style.paddingBottom = '10px'
     }
     h2.style.width = '100%'
-
-
-
-
-    } else {
-   
-        main.style.flexDirection = 'row'
-        main.style.width = '100%'
-        main.style.height = '80%'
-      
-        
-     
-        for (let i=0; i < cards.length; i++) {
-          cards[i].style.width = '24%'
-          cards[i].style.height = 'fit-content'
-          cards[i].style.marginBottom = '10px'
-          h2[i].style.width = '100%%'
-          iframes[i].style.width = '98%'
-          iframes[i].style.height = 'fit-content'
-          iframes[i].style.marginBottom = '10px'
-       };
-       for (let i=0; i < cards.length; i++) {
-       
-     
-    };
+  } else {
+    main.style.flexDirection = 'row'
+    main.style.width = '100%'
+    main.style.height = '95%'
+    
+    for (let i=0; i < cards.length; i++) {
+      cards[i].style.width = '24%'
+      cards[i].style.height = '99%'
+      cards[i].style.marginBottom = '10px'
+      cards[i].style.display = 'flex'
+      cards[i].style.flexDirection = 'column'
+      cards[i].style.alignItems = 'center'
+      h2[i].style.width = '100%'
+      iframes[i].style.width = '98%'
+      iframes[i].style.height = '92%'
+      iframes[i].style.marginBottom = '10px'
     }
+  }
   
   body.style.transition = 'all 0.5s ease'
 }
-
-const originalStyles = ref({})
-
-watch(isPortrait, () => {
-  applyBodyStyles()
-  updateOrientation()
-})
-
-onMounted(() => {
-
-
-  window.addEventListener('orientationchange', updateOrientation);
-  window.addEventListener('resize', updateOrientation);
-
-  applyBodyStyles()
-})
-
-onUnmounted(() => {
-  // Remove resize listener
-  window.removeEventListener('orientationchange', updateOrientation);
-  window.removeEventListener('resize', updateOrientation);
-  
-})
-
-
-
-
-
-
 
 
 </script>
@@ -163,10 +143,75 @@ onUnmounted(() => {
       ></div>
   
   </div>
+  
+
   </main>
+
+  <footer>
+
+  <div class="contact">
+    <h2>
+      <a href="mailto: jesse@ssome.how">Email</a>
+      <a href="mailto: jesse@ssome.how">Instagram</a>
+    </h2>
+  </div>
+  <div class="legal">
+     <h2>2025 © Copyright  <br>
+      All Rights Reserved <br>Jesse Katabarwa</h2>
+     <!-- <h2>This website and it's content were designed and developed by Jesse Katabarwa</h2> -->
+  </div>
+
+  </footer>
 </template>
 
 <style >
+@media screen and (max-width: 580px) {
+h1 a {
+  letter-spacing: 25px !important;
+  background-color: #e9e9e9 !important;
+  border-radius: 10px;
+ 
+
+}
+ h1 {
+  background-color: #f4f4f4 !important;
+  border-radius: 10px;
+
+}
+
+}
+.legal h2 {
+  font-size: 7px;
+  font-weight: 400;
+  padding: 0 10px 5px 10px ;
+  text-align: center;
+  margin-top: 8px;
+  text-transform: uppercase;
+
+
+}
+
+.contact h2 {
+  display: flex;
+  flex-direction: column;
+justify-content: space-between;
+text-transform: uppercase;
+
+}
+
+
+
+.contact h2 a {
+  color: black;
+  font-size: 7px;
+  padding: 0 10px 0 10px ;
+  cursor: pointer;
+
+}
+
+.contact h2 a:hover{
+  letter-spacing: 0.3px;;
+}
 
 main {
   display: flex;
@@ -195,21 +240,26 @@ header {
   background-color: #f4f4f4;
 }
 
-h1, h1 a{
+body {
   font-family: 'Helvetica Neue', Helvetica, Helvetica system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial , sans-serif;
+
+}
+
+
+h1, h1 a{
   font-size: 7px;
   font-weight: 400;
-  letter-spacing: 40px;
+  letter-spacing: 30px;
   text-align: center;
   cursor: pointer;
   margin: 0;
-  text-indent: 43px;
+  text-indent: 30px;
   text-decoration: none;
   color: grey;
 }
 
 h1 a:hover {
-  letter-spacing: 45px;
+  letter-spacing: 35px;
 } 
 
 
@@ -243,15 +293,6 @@ h2 a {
 
 }
 
-/* .resize-handle {
-  position: absolute;
-  right: -4px;
-  top: 0;
-  width: 4px;
-  height: 100%;
-  cursor: ew-resize;
-  background: rgb(213, 213, 213);
-  z-index: 10;
-} */
+
 
 </style>
