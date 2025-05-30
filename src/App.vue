@@ -152,7 +152,7 @@ const applyBodyStyles = () => {
   <div class="contact">
     <h2>
       <a href="mailto: jesse@ssome.how">Email</a>
-      <a href="mailto: jesse@ssome.how">Instagram</a>
+      <a href="https://www.instagram.com/jas.offline/">Instagram</a>
     </h2>
   </div>
   <div class="legal">
@@ -183,9 +183,9 @@ h1 a {
 .legal h2 {
   font-size: 7px;
   font-weight: 400;
-  padding: 0 10px 5px 10px ;
+
   text-align: center;
-  margin-top: 8px;
+padding-bottom: 2px;
   text-transform: uppercase;
 
 
@@ -204,7 +204,7 @@ text-transform: uppercase;
 .contact h2 a {
   color: black;
   font-size: 7px;
-  padding: 0 10px 0 10px ;
+
   cursor: pointer;
 
 }
@@ -224,6 +224,8 @@ header {
   justify-content: center;
   margin: 4px;
 }
+
+
 
 .head {
 
@@ -262,7 +264,9 @@ h1 a:hover {
   letter-spacing: 35px;
 } 
 
-
+.card h2 {
+  margin: 10px;
+}
 
 .card {
   position: relative;
@@ -282,8 +286,7 @@ h2 a {
     font-family:  Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: 400;
     font-size: 9px;
-    margin-top: 6px;
-    margin-bottom: 8px;
+
 }
 
 
