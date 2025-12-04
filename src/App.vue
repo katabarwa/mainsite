@@ -142,12 +142,12 @@ const toggleActiveAfilasi = () => {
             <h1>RECENT</h1>
           </div>
           <div :class="{ active: isActive }" class="recent-content">
-            <img width="100%" src="/src/assets/ssh_jessekatabarwa01.jpg" alt="head image1">
+            <img width="100%" src="/src/assets/ssh_jessekatabarwa01.jpg" alt="Art Work">
             <div class="recent-header">
               <h1 class="recent">The Grey Rings of My Eyes</h1> 
               <h1 class="recent">(2025)</h1> 
             </div>
-            <img width="100%" src="/src/assets/ssh_jessekatabarwa.jpg" alt="head image2">
+            <img width="100%" src="/src/assets/ssh_jessekatabarwa.jpg" alt="Art Works">
             <div class="recent-header">
               <h1 class="recent">The Grey Rings of My Eyes</h1> 
               <h1 class="recent">(2025)</h1> 
